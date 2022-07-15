@@ -163,7 +163,12 @@ onMounted(async () => {
 	const getItems = (a: any) => {
 		store.getItemDetails(a)
 	}
+	window.addEventListener('resize', () => {
+		e.resize()
+	})
 })
+
+
 </script>
 
 <style lang='less' scoped>

@@ -42,21 +42,23 @@ const store = useStore()
 <style lang='less' scoped>
 .card{
     display: flex;
-    width: calc(((100% - 6px) / 3) * 3) ;
+    width: 100%;
     flex-wrap: wrap;
     background-color: #060e40;
     box-shadow: 0 0 10px #060e40;
+    height: calc(100% - 41px);
     section{
         border: 1px solid #212028;
+        box-sizing: border-box;
         padding: 10px 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        width: calc((100% - 6px) / 3);
+        width: calc(100% / 3);
         div:nth-child(2) {
             font-size: 20px;
-            margin: 10px 0;
+            margin: 5px 0;
             font-weight: bold;
             color: #41b0db;
         }

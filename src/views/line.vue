@@ -4,171 +4,199 @@
 </template>
 
 <script setup lang='ts'>
+import { reactive, defineProps, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
+import { useStore } from '../store/index'
+
+type LineChartData = {
+  dataList: string[],
+  thisYear: number[]
+}
+const props = defineProps<LineChartData>()
+const store = useStore()
 
 
+onMounted(() => {
+    getLineChart()
+})
 // 获取折线图
-const getLineChart= () => {
-  const lineChartData  = reactive({});
+const getLineChart = async () => {
   const echart = echarts.init(document.querySelector('#lineChart') as HTMLElement);
+  await store.getLocalCityNCOVDataList();
+  let xLabel = props.dataList
+  let goToSchool = props.thisYear
   const option = {
-    title: {
-      textStyle: {
-        rich: {
-          a: {
-            fontSize: 16,
-            fontWeight: 600
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: '#0e1c47',
+        textStyle: {
+          color: '#fff',
+          fontSize: 16
+        },
+        axisPointer: {
+          lineStyle: {
+            color: '#fff'
           },
-          b: {
-            fontSize: 12,
-            color: 'gray'
+        },
+      },
+      legend: {
+        align: "left",
+        right: '10%',
+        top: '10%',
+        type: 'plain',
+        textStyle: {
+          color: '#7ec7ff',
+          fontSize: 16
+        },
+        // icon:'rect',
+        itemGap: 25,
+        itemWidth: 18,
+        icon: 'path://M0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z',
+
+        data: [
+          {
+            name: '人数'
           }
-        }
+        ]
       },
-      top: '3%',
-      left: '2%'
-    },
-    legend: {
-      data: ['当年', '去年'],
-      textStyle: {
-        align: 'right'
+      grid: {
+        left: '16%'
       },
-      x: 'right',
-      y: '2%',
-      icon: 'rect'
-    },
-
-    tooltip: {
-      trigger: 'axis'
-    },
-
-    grid: {
-      top: '18%',
-      left: '6%',
-      right: '3%',
-      bottom: '10%'
-    },
-    xAxis: [
-      {
+      xAxis: [{
         type: 'category',
-        axisLine: {
-          show: true
-        },
-        splitArea: {
-          // show: true,
-          color: '#f00',
-          lineStyle: {
-            color: '#f00'
-          }
-        },
-        splitLine: {
-          show: false
-        },
-        axisLabel: {
-          margin: 10
-        },
         boundaryGap: false,
-        data: lineChartData.dataList
-      }
-    ],
-
-    yAxis: [
-      {
-        type: 'value',
-        min: 0,
-        // max: 140,
-        splitNumber: 4,
+        axisLine: { //坐标轴轴线相关设置。数学上的x轴
+          show: true,
+          lineStyle: {
+            color: '#233653'
+          },
+        },
+        axisLabel: { //坐标轴刻度标签的相关设置
+          textStyle: {
+            color: '#7ec7ff',
+            padding: 16,
+            fontSize: 14
+          },
+          interval:0,
+          rotate: 45,
+          formatter: function (data: string[]) {
+            return data
+          }
+        },
         splitLine: {
           show: true,
           lineStyle: {
-            color: '#e3e3e3'
-          }
-        },
-        axisLine: {
-          show: false
-        },
-        axisLabel: {
-          show: true,
-          margin: 20
+            color: '#192a44'
+          },
         },
         axisTick: {
-          show: false
-        },
-        label: {
           show: false,
-          position: 'top',
-          textStyle: {
-            color: '#7AA1FF'
+        },
+        data: xLabel
+      }],
+      yAxis: [{
+        name: '人数',
+        nameTextStyle: {
+          color: "#7ec7ff",
+          fontSize: 16,
+          padding: 10
+        },
+        min: 0,
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: '#192a44'
           },
-          trigger: 'item'
-        }
-      }
-    ],
-    series: [
-      {
-        name: '当年',
-        type: 'line',
-        smooth: true, // 是否平滑
-        showAllSymbol: true,
-        symbol: 'circle',
-        symbolSize: 12,
-        lineStyle: {
-          normal: {
-            color: '#7AA1FF'
+        },
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: "#233653"
+          }
+
+        },
+        axisLabel: {
+          show: true,
+          textStyle: {
+            color: '#7ec7ff',
+            padding: 16
+          },
+          formatter: function (value: number) {
+            if (value === 0) {
+              return value
+            }
+            return value
           }
         },
-
+        axisTick: {
+          show: false,
+        },
+      }],
+      series: [{
+        name: '人数',
+        type: 'line',
+        symbol: 'circle', // 默认是空心圆（中间是白色的），改成实心圆
+        showAllSymbol: true,
+        symbolSize: 0,
+        smooth: true,
+        lineStyle: {
+          normal: {
+            width: 5,
+            color: "rgba(25,163,223,1)", // 线条颜色
+          },
+          borderColor: 'rgba(0,0,0,.4)',
+        },
         itemStyle: {
-          color: '#7AA1FF',
-          borderWidth: 3,
-          borderColor: '#f3f3f3'
+          color: "rgba(25,163,223,1)",
+          borderColor: "#646ace",
+          borderWidth: 2
+
         },
         tooltip: {
-          formatter: '{a}'
+          show: true
         },
-        data: this.lineChartData.thisYear
-      },
-      {
-        name: '去年',
-        type: 'line',
-        smooth: true, // 是否平滑
-        showAllSymbol: true,
-        symbol: 'circle',
-        symbolSize: 12,
-        lineStyle: {
+        areaStyle: { //区域填充样式
           normal: {
-            color: '#00ca95'
+            //线性渐变，前4个参数分别是x0,y0,x2,y2(范围0~1);相当于图形包围盒中的百分比。如果最后一个参数是‘true’，则该四个值是绝对像素位置。
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: "rgba(25,163,223,.3)"
+
+
+            },
+            {
+              offset: 1,
+              color: "rgba(25,163,223, 0)"
+            }
+            ], false),
+            shadowColor: 'rgba(25,163,223, 0.5)', //阴影颜色
+            shadowBlur: 20 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
           }
         },
-        label: {
-          show: false,
-          position: 'top',
-          textStyle: {
-            color: '#00ca95'
-          },
-          formatter: '{c}'
-        },
-
-        itemStyle: {
-          color: '#00ca95',
-          borderColor: '#fff',
-          borderWidth: 3
-        },
-
-        data: this.lineChartData.lastYear
-      }
-    ]
+        data: goToSchool
+      }]
   };
   echart.setOption(option);
-},
+  window.addEventListener('resize', () => {
+		echart.resize()
+	})
+}
+defineExpose({
+  getLineChart
+})
 
 
 
 </script>
 
 <style lang='less' scoped>
-.lineChart{
-    width: 100%;
-    height: 220px;
+.lineChart {
+  width: 100%;
+  height: calc(100% - 41px);
+  background-color: #060e40;
+  border-right: 1px solid #212028;
+  border-left: 1px solid #212028;
+  border-bottom: 1px solid #212028;
+  box-shadow: 0 0 5px #212028;
 }
 </style>

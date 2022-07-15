@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="table-wrapper">
         <table class="table" border="1" cellspacing="0">
             <thead>
                 <th>地区</th>
@@ -8,7 +8,7 @@
                 <th>治愈</th>
                 <th>死亡</th>
             </thead>
-            <transition-group enter-active-class="animate_animated animate_flipInY" tag="tbody">
+            <transition-group enter-active-class="animate__animated animate__flipInY" tag="tbody">
                 <tr v-for="item in store.items" :key="item.name">
                     <td align="center">{{ item.name }}</td>
                     <td align="center">{{ item.today.confirm }}</td>
@@ -28,6 +28,10 @@ const store = useStore()
 </script>
 
 <style lang='less' scoped>
+.table-wrapper{
+    height: 100%;
+    overflow: auto;
+}
 .table {
     width: 100%;
     border: 1px solid #212028;

@@ -2,6 +2,11 @@ import { defineStore } from "pinia";
 import { getList } from '../api/list'
 import { RootObject, Children, ChinaAdd, ChinaTotal, LocalCityNCOVDataList } from './type'
 
+
+type LineData = {
+    dataList: string[],
+    thisYear: number[]
+}
 export const useStore = defineStore('MSG', {
     state: () => {
         return {
@@ -9,7 +14,8 @@ export const useStore = defineStore('MSG', {
             items: <Children[]>[],
             chinaAdd: <ChinaAdd>{},
             chinaTotal: <ChinaTotal>{},
-            localCityNCOVDataList: <LocalCityNCOVDataList[]>[]
+            localCityNCOVDataList: <LocalCityNCOVDataList[]>[],
+            lineData: <LineData> {}
         }
     },
 
@@ -28,6 +34,8 @@ export const useStore = defineStore('MSG', {
         async getLocalCityNCOVDataList () {
             const res = await getList();
             this.localCityNCOVDataList = res.data.data.data.localCityNCOVDataList.slice(0, 10)
+            this.lineData.dataList = this.localCityNCOVDataList.map(v => v.city)
+            this.lineData.thisYear = this.localCityNCOVDataList.map(v => v.mediumRiskAreaNum);
         }
     }
 })

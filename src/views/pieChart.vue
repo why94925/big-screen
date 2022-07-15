@@ -15,7 +15,6 @@ const store = useStore()
 var pieChart = ref()
 const initChart = async () => {
     await store.getLocalCityNCOVDataList()
-    
     const echart = echarts.init(pieChart.value as HTMLElement);
     var PieColor = ["#EB3B5A", "#FA8231", "#FFD14C", '#009DFF', "#00e473", "#395CFE", "#2EC7CF", "#733DFF", "#966EFF", "#7fdefe"];
     var Total = store.localCityNCOVDataList.reduce((_v: any, v: any) =>  _v + v.highRiskAreaNum, 0)
@@ -133,14 +132,20 @@ const initChart = async () => {
     };
 
     echart.setOption(option)
+    window.addEventListener('resize', () => {
+		echart.resize()
+	})
 }
 </script>
 
 <style lang='less' scoped>
 .pieChart {
+    background-color: #060e40;
     width: 100%;
-    height: 220px;
-    border: 1px solid #212028;
+    height: calc(100% - 41px);
+    border-right: 1px solid #212028;
+    border-bottom: 1px solid #212028;
+    border-left: 1px solid #212028;
     box-shadow: 0 0 5px #212028;
 }
 </style>
