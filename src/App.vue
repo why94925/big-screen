@@ -183,5 +183,6 @@ body,
   div::-webkit-scrollbar-corner {
     background: #179a16;
   }
+  
 }
 </style>
